@@ -6,7 +6,10 @@ Next Steps:
 1. Need to add Table handling / timers.
 2. Should there be a table timer, thus starting the cleaning process and effectively kicking out the current customer, and notifying the next customers? 
 3. Need to add Java server communication ability between this backend code and the website front end. 
-4. There's always more....
+
+4. Really important: We need to start the web front end as soon as possible. 
+
+5. There's always more....
 
 Completed:
 ==========
