@@ -1,11 +1,32 @@
 import java.util.concurrent.TimeUnit;
 
+import org.json.*;
+
+
 public class ITSC4155 {
+	
+	
+	
+	private static void parseConfig() {
+		
+	}
+	
+	
+	
+	
+	
 	public static void main(String[] args) {
 		System.out.println("hello ITSC4155");
 		
 		restaurant resty = new restaurant();
+
+		System.out.println(resty.getTables());
+		resty.addTable(new table(10));
+		resty.getTableByID(10).setSeats(20);
+		resty.getTableByID(10).setShape("RAINBOW");
+		resty.saveConfig();
 		
+		/*
 		table t0 = new table(1);
 		table t1 = new table(3);
 		table t2 = new table(4);
@@ -64,7 +85,7 @@ public class ITSC4155 {
 			for (group g: tTable.getQueued()) {
 				System.out.println("Queued, "+tTable.getSeats()+", " + g.getName());
 			}
-		}
+		}*/
 		
 		
 

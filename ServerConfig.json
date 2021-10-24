@@ -1,0 +1,25 @@
+{
+    "restaurant": {
+        "restaurant_name": "BigBuns",
+        "restaurant_phone": "9199868283",
+        "hours_open": "1100",
+        "hours_end": "2200"
+    }
+    "tables": [
+        {
+            "table_id": "1",
+            "table_shape": "Square",
+            "seats": "2"
+        },
+        {
+            "table_id": "2",
+            "table_shape": "Circle",
+            "seats": "4"
+        },
+        {
+            "table_id": "3",
+            "table_shape": "Square",
+            "seats": "4"
+        }
+    ]
+}

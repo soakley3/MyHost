@@ -21,6 +21,7 @@ class table {
 	
 	// Unique id or hash for this table object.
 	private int id; 
+	private String shape;
 	
 	
 	// Available seating so groups can be privy
@@ -81,10 +82,31 @@ class table {
 		return seats;
 	}
 	
-	public table(int chairs) {
+	public String getShape() {
+		return shape;
+	}
+	
+	public int getID() {
+		return id;
+	}
+	
+	public void setSeats(int chairs) { 
 		seats = chairs;
+	}
+	
+	public void setShape(String s) {
+		shape = s;
+	}
+	
+	//public table(int _id, int chairs, String tableShape) {
+	public table(int _id) {
+		id = _id;
 		currentlySat = null;
 		queue = new LinkedList<group>();
 		status = STATUS_AVAILABLE;
+	}
+	
+	public String toString() {
+		return "Table " + Integer.toString(id) + "; Shape " + shape +"; Seats " + Integer.toString(seats) + ";";
 	}
 }
