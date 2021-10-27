@@ -41,19 +41,25 @@ class restaurant {
 	// this can be used to contact the groups waiting longest.
 	// This may need to be spun off into it's own thread to prevent blocking of restaurant 
 	// oeprations in the main loop
-	private void sortGroupsByLongestWaiting() {
+	public void sortGroupsByLongestWaiting() {
 		LinkedList<group> sortable = new LinkedList<>();
 		for (table singleTable : tables) {
 			for (group waiting : singleTable.getQueued()) {
-				sortable.add(waiting);
+				if (waiting.openToDifferentTable())           // only add the group to the list if they're open to a different table
+						sortable.add(waiting);
 			}
 		}
 		Collections.sort(sortable, new Comparator<group>() {
 		@Override
 			public int compare(group g1, group g2) {
-				return g1.getSecondsWaiting() - g2.getSecondsWaiting();
+				return g2.getSecondsWaiting() - g1.getSecondsWaiting();
 			}
 		});
+		
+		for (group g: sortable) {
+			System.out.println("*-----------*");
+			System.out.println(g.toString()+": "+g.getSecondsWaiting());
+		}
 		// now the sortable linked list is sorted for the longest waiting, we can
 		// pop through the list and see who is compatible with the number of free
 		// seats from the free table. 
@@ -94,8 +100,8 @@ class restaurant {
 		       
 		       String[] splitLine = line.split(":"); // split the string into string[], key:value
 		       
-		       System.out.println(line + " - "+ configLevel);
-		       System.out.println(splitLine[0] + ":" + splitLine[1] + ":"+ configLevel);
+		       //System.out.println(line + " - "+ configLevel);
+		       //System.out.println(splitLine[0] + ":" + splitLine[1] + ":"+ configLevel);
 		       
 		       // Here we set retaurant config
 		       if (configLevel == 2) { 

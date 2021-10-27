@@ -37,9 +37,20 @@ class table {
 		return currentlySat;
 	}
 	
+	private void immediatelySeatGroup(group addition) {
+		
+	}
+	
 	public boolean queueGroup(group addition) {
 		if (meetsRequirements(addition.getGroupSize())) {
-			return queue.add(addition); //true for success, false for failure to add to the queue
+			if (currentlySat == null) {
+				System.out.println("Immediately seating this group: " + addition.toString());
+				currentlySat = addition;
+				return true;
+			} else {
+				System.out.println("Table " + id + ": queuing new group: "+ addition.toString());
+				return queue.add(addition); //true for success, false for failure to add to the queue
+			}
 		} else {
 			System.out.println("Group too big for table.");
 			return false;
@@ -107,6 +118,17 @@ class table {
 	}
 	
 	public String toString() {
-		return "Table " + Integer.toString(id) + "; Shape " + shape +"; Seats " + Integer.toString(seats) + ";";
+		String toRet = "Table: " + Integer.toString(id) + "; Shape: " + shape +"; Seats: " + Integer.toString(seats) + ";\n";
+		String queueue = "";
+		for (group g: queue) {
+			queueue += g.toString() + " - ";
+		}
+		String current = "";
+		if (currentlySat == null) current = "No one";
+		else current = currentlySat.toString();
+		
+		toRet += "Currently Sat: "+ current + "; Queued: "+ queueue +";";
+		return toRet;
+		
 	}
 }

@@ -47,7 +47,9 @@ class group {
 	}
 	
 	
-	
+	public boolean openToDifferentTable() {
+		return tableIsVariable;
+	}
 		
 	public void adjustTableVariability(boolean isVariable) {
 		tableIsVariable = isVariable;
@@ -59,6 +61,17 @@ class group {
 	public int getSecondsWaiting() { 
 		return (int)(System.currentTimeMillis() - timeWaiting)/1000; 
 	}
+	
+	public void setSatDown() {
+		timeWaiting = -1;
+	}
 
+	
+	public String toString() { 
+		if (name == null)
+			return "None";
+		return "Name: "+ name + "; phone: "+ phoneNumber + "; Size: "+ Integer.toString(getPartySize())+"; Variable Table: "+ Boolean.toString(openToDifferentTable())+ "; ";
+		
+	}
 	
 }
