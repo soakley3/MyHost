@@ -1,38 +1,42 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.json.*;
+/*
+ * This class is for restaurant class instantiation and testing.
+ * Theres a lot of garbage in here, but also some worthwhile commentary.
+ */
 
 
 public class ITSC4155 {
-	
-	
 	
 	
 	public static void main(String[] args) {
 		System.out.println("hello ITSC4155");
 		// Setup restaurant 
 		restaurant resty = new restaurant();
+		resty.tables = new LinkedList<table>();
+		resty.parseConfig();
 
 		for(table t: resty.getTables()) {
 			t.setSeats(20);
 		}
 		
 		// Add a few extra tables
-		resty.addTable(new table(4));
+		resty.addTable(new table(resty, 4));
 		resty.getTableByID(4).setSeats(20);
 		resty.getTableByID(4).setShape("RAINBOW");		
 		
-		resty.addTable(new table(5));
+		resty.addTable(new table(resty, 5));
 		resty.getTableByID(5).setSeats(20);
 		resty.getTableByID(5).setShape("RAINBOW");	
 		
-		resty.addTable(new table(6));
+		resty.addTable(new table(resty, 6));
 		resty.getTableByID(6).setSeats(20);
 		resty.getTableByID(6).setShape("RAINBOW");	
 		
-		resty.addTable(new table(7));
+		resty.addTable(new table(resty, 7));
 		resty.getTableByID(7).setSeats(20);
 		resty.getTableByID(7).setShape("RAINBOW");	
 		
@@ -54,9 +58,13 @@ public class ITSC4155 {
 				}
 				int variableTable = r.nextInt(4);
 				System.out.println("Variable table = "+variableTable);
-				group t = new group(name, "9199868283", r.nextInt(10), (variableTable >= 1 ? true:false) );
+				int assignt = r.nextInt(7)+1;
+				//System.out.println("Assigned: " + assignt);
 				
-				resty.getTableByID(r.nextInt(7)+1).queueGroup(t);
+				group t = new group(name, "9199868283", r.nextInt(10), assignt, (variableTable >= 1 ? true:false) );
+				
+				resty.getTableByID(assignt).queueGroup(t);
+
 				
 				//groups.add(t);
 				
@@ -93,25 +101,52 @@ public class ITSC4155 {
 		}
 		
 	
+		System.out.println("");
+		System.out.println("");
+		System.out.println("-- ADD NEW TABLE AND TEST ALTERNATE QUEUING");
+		System.out.println("");
+		System.out.println("");
 		// Now add a new table to test if any one wants it.
 		// This will test the sorting algo to determine if we do choose the longest waiting queued group 
 		// and offer them the table, only if they want it. 
 		
+		resty.addTable(new table(resty, 8));
+		resty.getTableByID(8).setSeats(2);
+		resty.getTableByID(8).setShape("CUBE");
 		
-		resty.sortGroupsByLongestWaiting();
 		
-		/*
-		 * Okay the sorting works - example output, note that node 0 of the linked list is the longest queued.
-		 * Next: implement the ability to send out coms regarding if a table is open or not.
-		 * 
-		 * *-----------*
-			Name: dagwjzrllv; phone: 9199868283; Size: 5; Variable Table: true; : 35  <---- seconds waiting!!!!
-			*-----------*
-			Name: wezbqitcml; phone: 9199868283; Size: 7; Variable Table: true; : 33
-			*-----------*
-			Name: jhospftrvi; phone: 9199868283; Size: 8; Variable Table: true; : 32
-		 * 
-		 */
+		// Since this table is new it is marked as totally free. No one is currently sat or queued.
+		// Calling seatNext() will look at the other tables, see whos been waiting the longest, and then offer to seat them.
+		// The test immediately accepts them. But from the debug output we can see that it's the longest waiting group.
+		resty.getTableByID(8).seatNext(); 
+		
+		for (table t: resty.getTables()) {
+			System.out.println("------------------");
+			System.out.println(t.toString());
+			System.out.println("------------------");
+		}
+		
+		// UPDATE IT WORKS, now the longest waiting group can move to a different table.
+		// This was achieved by essentially passing a "pointer" from the restaurant class to the table class on table instantiation!!!!
+		
+		System.out.println("");
+		System.out.println("");
+		System.out.println("-- Clean table 8 and then ask for another waiting customer");
+		System.out.println("");
+		System.out.println("");
+		resty.getTableByID(8).setCleaning(); // this nulls out the current customer
+		resty.getTableByID(8).seatNext();    // this should now bring the second longest waiting customer
+		
+		for (table t: resty.getTables()) {
+			System.out.println("------------------");
+			System.out.println(t.toString());
+			System.out.println("------------------");
+		}
+		
+		// It tests the length of time waiting, and then if the group size <= size of table. 
+		
+		// Next, add server communication.
+		
 		
 		//resty.saveConfig();
 		

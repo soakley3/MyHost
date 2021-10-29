@@ -17,6 +17,8 @@ class group {
 	// is this group open to sitting at a different table if one is available earlier than the selected table? 
 	private boolean tableIsVariable;
 	
+	private int assignedTable;
+	
 	
 	// unique id / hash for this group? 
 	private int id; // 
@@ -25,12 +27,21 @@ class group {
 		return size;
 	}
 	
+	public int getAssignedTable() {
+		return assignedTable;
+	}
+	
+	public void setAssignedTable(int x) {
+		assignedTable = x;
+	}
+	
 	// Parameters:     Contact name, contact phone number, # chairs required,  willing to accept a different table? 
-	public group(String contactName, String contactNumber, int partSize, boolean tableDifferent) {
+	public group(String contactName, String contactNumber, int partSize, int theAssignedTable, boolean tableDifferent) {
 		name = contactName;
 		phoneNumber = contactNumber;
 		size = partSize;
 		tableIsVariable = tableDifferent;
+		assignedTable = theAssignedTable;
 		timeWaiting = System.currentTimeMillis();	
 	}
 	
@@ -46,6 +57,10 @@ class group {
 		return size;	
 	}
 	
+	public void notifyOfDifferentTable(int tableID) {
+		
+		
+	}
 	
 	public boolean openToDifferentTable() {
 		return tableIsVariable;

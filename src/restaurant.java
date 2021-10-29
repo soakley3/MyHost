@@ -13,13 +13,13 @@ class restaurant {
 	
 	
 	private int id;
-	private String name;
+	public String name;
 	private String phone;
 	private String StartOfDay;
 	private String EndOfDay;
 	
 	// list of tables 
-	private LinkedList<table> tables;
+	public LinkedList<table> tables;
 	
 	public void addTable(table x) {
 		tables.add(x);  
@@ -37,16 +37,23 @@ class restaurant {
 		return null;
 	}
 	
+	public String getRestaurantName() {
+		return name;
+	}
+	
 	
 	// this can be used to contact the groups waiting longest.
 	// This may need to be spun off into it's own thread to prevent blocking of restaurant 
 	// oeprations in the main loop
-	public void sortGroupsByLongestWaiting() {
+	public LinkedList<group> sortGroupsByLongestWaiting() {
 		LinkedList<group> sortable = new LinkedList<>();
+		System.out.println("--> " + tables);
 		for (table singleTable : tables) {
+			System.out.println("---> " + singleTable.toString());
 			for (group waiting : singleTable.getQueued()) {
-				if (waiting.openToDifferentTable())           // only add the group to the list if they're open to a different table
-						sortable.add(waiting);
+				if (waiting.openToDifferentTable()) {          // only add the group to the list if they're open to a different table
+					sortable.add(waiting);
+				}
 			}
 		}
 		Collections.sort(sortable, new Comparator<group>() {
@@ -63,6 +70,8 @@ class restaurant {
 		// now the sortable linked list is sorted for the longest waiting, we can
 		// pop through the list and see who is compatible with the number of free
 		// seats from the free table. 
+		
+		return sortable;
 	}
 	
 	public restaurant() {
@@ -73,11 +82,11 @@ class restaurant {
 		// 3. xml config?
 		// 4. Custom config? 
 		
-		tables = new LinkedList<table>();
-		parseConfig();
+		//tables = new LinkedList<table>();
+		//parseConfig();
 	}
 	
-	private void parseConfig() {
+	public void parseConfig() {
 		try (BufferedReader br = new BufferedReader(new FileReader("ServerConfig.json"))) {
 			int mostRecentTableID = -1;
 		    String line;
@@ -130,7 +139,7 @@ class restaurant {
 			    	   case "table_id": {
 			    		   mostRecentTableID = Integer.parseInt(splitLine[1]);
 			    		   System.out.println("MOST RECENT TABLE ID: "+mostRecentTableID);
-			    		   addTable(new table(mostRecentTableID));
+			    		   addTable(new table(this, mostRecentTableID));
 			    	   }
 			    	   case "table_shape": {
 			    		   getTableByID(mostRecentTableID).setShape(splitLine[1]);
