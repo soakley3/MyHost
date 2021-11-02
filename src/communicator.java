@@ -90,9 +90,8 @@ class communicator implements Runnable {
     
     public void parseIncoming(String t) {
     	/* A few examples
-    	"isFree:table:1"                        -> [table, 1, free]                             -> get the info from restaurant - is it free? 
-    	"queue:table:1:Jonny Depp:phoneNum:etc" -> [table, 1, queue, Jonny Depp, phoneNum, etc] -> get the info from restaurant
-    	
+    	"isFree:table:1"                        -> [isFree, table, 1]                           -> get the info from restaurant - is it free? 
+    	"queue:table:1:Jonny Depp:phoneNum:etc" -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
     	
     	*/
     	
