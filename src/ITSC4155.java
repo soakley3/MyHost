@@ -16,9 +16,22 @@ public class ITSC4155 {
 		System.out.println("hello ITSC4155");
 		// Setup restaurant 
 		restaurant resty = new restaurant();
+			
 		resty.tables = new LinkedList<table>();
 		resty.parseConfig();
-
+	
+		// Yee haw start the communication thread, including the resty class 
+        try {		
+			communicator server = new communicator(resty, 5000);
+			server.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("past the server instantiation.");
+		
+		
+		/*x
 		for(table t: resty.getTables()) {
 			t.setSeats(20);
 		}
@@ -45,7 +58,7 @@ public class ITSC4155 {
 		for(table t: resty.getTables()) {
 			System.out.println("T: "+t.toString());
 		}
-
+		
 		// Add many groups with different lengths of time being queued. 
 		// This will allow the sorting algo to be tested.
 		ArrayList<group> groups = new ArrayList<group>();
@@ -77,7 +90,7 @@ public class ITSC4155 {
 				}				
 			}
 		}
-		
+x		*/ 
 		/*
 		 * SAMPLE TEST CASE OUTPUT 
 		 * 
@@ -93,7 +106,7 @@ public class ITSC4155 {
 			------------------
 		 * 
 		 */
-		
+		/*y
 		for (table t: resty.getTables()) {
 			System.out.println("------------------");
 			System.out.println(t.toString());
@@ -149,9 +162,14 @@ public class ITSC4155 {
 		
 		
 		//resty.saveConfig();
-		
-		
-
-		
+y		*/
+			
 	}
+	
+	
+	public void actualMain() { 
+		// nadas for now.
+	}
+	
+	
 }

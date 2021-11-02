@@ -18,6 +18,7 @@ class restaurant {
 	private String StartOfDay;
 	private String EndOfDay;
 	
+	
 	// list of tables 
 	public LinkedList<table> tables;
 	
