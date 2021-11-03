@@ -2,6 +2,7 @@
 // I did not write this and found it on the internet for testing reasons.
 // It will be modified to poll the restaurant server. 
 import java.net.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
   
 public class Client {
@@ -37,14 +38,26 @@ public class Client {
         }
         
         
-        String a = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        //String a = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         //a += "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         
-        send(a);
+        //send(a);
+        
+        String[] toSend = {
+            	"isFree:table:1",//                        -> [isFree, table, 1]                           -> get the info from restaurant - is table of ID 1 free? 
+            	"setFree:table:1",//                       -> [setFree, table, 1]                          -> manually/forcefully set the table of ID 1 free
+            	"addTable:table:20",//                     -> [addTable, table, 20]                        -> manually add a table with 20 seats
+            	"queue:table:1:Jonny Depp:919919919:3:3:true",// -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
+            	"removeTable:table:1"//                    -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
+
+        };
+        
+        
+        
         
         //out.flush();
         
-        int z = 0;
+        
   
         // string to read message from input
         String line = "";
@@ -56,15 +69,20 @@ public class Client {
             {
                 //line = input.readLine();
                 if (line.equals("Over")) break;
-                for (int j = 0; 10 > j; j++) {
-                	send(a + Integer.toString(j)+"."+Integer.toString(z));
-                	z++;
-                	if (z > 10) { 
-                		send("DIE");
-                		die = true;
-                		break;
-                	}
+                for (int z = 0; toSend.length > z; z++ ) {
+                	send(toSend[z]);               	
+					try {
+						TimeUnit.SECONDS.sleep(1);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}	
+					if (z == toSend.length) {
+						die = true;
+						break;
+					}
                 }
+            	
                 if (die) break;
             }
             catch(Exception i)
@@ -89,6 +107,10 @@ public class Client {
     public static void main(String args[])
     {
         Client client = new Client("127.0.0.1", 5000);
+        // things to send
+
+        
+        //client.send();
     }
     
     public void send(String t) {

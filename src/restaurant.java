@@ -26,6 +26,17 @@ class restaurant {
 		tables.add(x);  
 	}
 	
+	public int getHighestTableIndex() {
+		int highest = 0;
+		for (table t: tables) {
+			int z = t.getID();
+			if (z > highest)
+				highest = z;
+		}
+		return highest;
+	}
+	
+	
 	public LinkedList<table> getTables() {
 		return tables;
 	}
@@ -41,6 +52,10 @@ class restaurant {
 	public String getRestaurantName() {
 		return name;
 	}
+	
+	public boolean tableExists(int zid) {
+		return getTableByID(zid) != null;
+ 	}
 	
 	
 	// this can be used to contact the groups waiting longest.

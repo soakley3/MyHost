@@ -88,19 +88,103 @@ class communicator implements Runnable {
     	}
     }
     
-    public void parseIncoming(String t) {
+    public String parseIncoming(String t) {
+    	
+    	// group parameter note public group(String contactName, String contactNumber, int partSize, int theAssignedTable, boolean tableDifferent) 
     	/* A few examples
-    	"isFree:table:1"                        -> [isFree, table, 1]                           -> get the info from restaurant - is it free? 
-    	"queue:table:1:Jonny Depp:phoneNum:etc" -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
+    	"isFree:table:1"                        -> [isFree, table, 1]                           -> get the info from restaurant - is table of ID 1 free? 
+    	"setFree:table:1"                       -> [setFree, table, 1]                          -> manually/forcefully set the table of ID 1 free
+    	"removeTable:table:1                    -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
+    	"addTable:table:20                      -> [addTable, table, 20]                        -> manually add a table with 20 seats
+    	"queue:table:1:Jonny Depp:phoneNum:PartSize:table:alternateAcceptabe" -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
     	
     	*/
+    	t = t.replaceAll("\r", "");
+    	t = t.replaceAll("\n", "");
+
+    	String[] parsed = t.split(":");   
+
+    	String builtLine = "";
+    	if (parsed.length == 0) return builtLine;
     	
-    	String [] parsed = t.split(":");   
+    	System.out.println("- "+t);
+    	for(String x: parsed) {
+    		System.out.println("-- '"+x+"'");
+    	}
+    	
     	switch (parsed[0]) {
-    	//figure it out... 
+    		//figure it out... 
     	
+	    	case "isFree": {
+	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
+	    			System.out.println("isFree not exist");
+	    			break;
+	    		}
+	    		
+	    		boolean tIsFree = parent.getTableByID(Integer.parseInt(parsed[2])).isReady();
+	    		System.out.println("|is the table "+ Integer.parseInt(parsed[2])+ " free? " + tIsFree);
+	    		send("table:"+Integer.parseInt(parsed[2])+":"+Boolean.toString(tIsFree)); // send "table:1:true"
+	    		break;
+	    	}
+	    	
+	    	case "setFree": {
+	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
+	    			System.out.println("setFree not exist");
+	    			break;
+	    		}
+	    		System.out.println("|Setting the table "+ Integer.parseInt(parsed[2])+ " free");
+	    		parent.getTableByID(Integer.parseInt(parsed[2])).setReady();
+	    		send("table:"+Integer.parseInt(parsed[2])+":"+Boolean.toString(parent.getTableByID(Integer.parseInt(parsed[2])).isReady())); // send "table:1:true"
+	    		break;
+	    	}
+	
+	    	case "queue": {
+	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
+	    			System.out.println("queue not exist");
+	    			break;
+	    		}
+	    		group nt = new group(parsed[3], parsed[4], Integer.parseInt(parsed[5]), Integer.parseInt(parsed[2]),Boolean.parseBoolean(parsed[7]));
+	    		System.out.println("|adding new group: "+nt.toString());
+	    		parent.getTableByID(Integer.parseInt(parsed[2])).queueGroup(nt);
+	    		break;
+	    		// determine if the new group was added to the queue or immediately sat
+	    	}
+	    	
+	    	case "removeTable": {
+	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
+	    			System.out.println("removeTable not exist");
+	    			break;
+	    		}
+	    		System.out.println("|Setting the table "+ Integer.parseInt(parsed[2])+ " remove");
+	    		parent.tables.remove(parent.getTableByID(Integer.parseInt(parsed[2])));
+	    	}
+	    	
+	    	case "addTable": {
+	    		int maxInd = parent.getHighestTableIndex();
+	    		table t1 = new table(parent, maxInd+1);
+	    		t1.setSeats(Integer.parseInt(parsed[2]));
+	    		System.out.println("|Adding the table "+ t1.toString());
+	    		parent.addTable(t1);
+	    		break;
+	    	}
+	    	
+	    	case "getAllTables": {
+	    		String allTables = "";
+	    		for (table ttable: parent.tables ) {
+	    			allTables += ttable.toString() + "\n";// NOTE THE \n ADDS A NATURAL DELIMETER!!!!!!
+	    		}
+	    		break;
+	    	}
+	    	
+	    	default: {
+	    		System.out.println("|No parsing matches");
+	    		break;
+	    	}
+	    	
     	
     	}
+    	
+    	return builtLine;
     	
     	
     }
