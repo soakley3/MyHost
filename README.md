@@ -33,7 +33,7 @@ Server Communication Guidelines:
 1. When writing to the client socket, the String must have "\n\r" appended so that the String makes it to the client.
 
 	Example:
-
+	```
 	public void send(String t) {
 		try {
 			out.writeUTF(t+"\r\n");
@@ -42,7 +42,7 @@ Server Communication Guidelines:
 			System.out.println(e);
 		}
 	}
-
+	```
 
 2. When sending the string through the socket, use a colon as the delimeter.
 
