@@ -122,6 +122,7 @@ class table {
 	// The current group should have already been removed from seating by the time this is called.
 	public void setReady() {
 		status = STATUS_AVAILABLE;
+		currentlySat = null;
 		seatNext(); // this will try and sit the next customer.
 	}
 	

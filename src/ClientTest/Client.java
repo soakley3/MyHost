@@ -23,8 +23,7 @@ public class Client {
             System.out.println("Connected");
   
             // takes input from terminal
-            input  = new DataInputStream(System.in);
-  
+            input  = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             // sends output to the socket
             out    = new DataOutputStream(socket.getOutputStream());
         }
@@ -46,10 +45,14 @@ public class Client {
         String[] toSend = {
             	"isFree:table:1",//                        -> [isFree, table, 1]                           -> get the info from restaurant - is table of ID 1 free? 
             	"setFree:table:1",//                       -> [setFree, table, 1]                          -> manually/forcefully set the table of ID 1 free
-            	"addTable:table:20",//                     -> [addTable, table, 20]                        -> manually add a table with 20 seats
-            	"queue:table:1:Jonny Depp:919919919:3:3:true",// -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
-            	"removeTable:table:1"//                    -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
-
+            	"addTable:table:20:hexagon",//             -> [addTable, table, 20]                        -> manually add a table with 20 seats
+            	//queue,table,tablenum,name,phone,partysize,opentonewtable
+            	"queue:table:1:Jonny Depp:919919919:3:true",// -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
+            	"removeTable:table:1",//                   -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
+            	"addTable:table:20:hexagon",//             -> [addTable, table, 20, hexagon]
+            	"getAllTables",
+            	"queue:table:1:Jonny Depp:919919919:2:true",
+            	"queue:table:5:Jonny Depp:919919919:2:true"
         };
         
         
@@ -70,14 +73,16 @@ public class Client {
                 //line = input.readLine();
                 if (line.equals("Over")) break;
                 for (int z = 0; toSend.length > z; z++ ) {
-                	send(toSend[z]);               	
+                	send(toSend[z]);     
+                	line = input.readUTF();
+                	System.out.println("R: "+line);
 					try {
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}	
-					if (z == toSend.length) {
+					if (z == toSend.length-1) {
 						die = true;
 						break;
 					}

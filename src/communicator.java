@@ -83,6 +83,7 @@ class communicator implements Runnable {
     	try {
     		out.writeUTF(t+"\r\n");
     		out.flush();
+    		System.out.println("*"+t);
     	} catch (Exception e) {
     		System.out.println(e);
     	}
@@ -117,7 +118,8 @@ class communicator implements Runnable {
     	
 	    	case "isFree": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
-	    			System.out.println("isFree not exist");
+	    			System.out.println("isFree failure: Table "+ Integer.parseInt(parsed[2]) + " does not exist.");
+	    			send("table:"+Integer.parseInt(parsed[2])+":doesntExist");
 	    			break;
 	    		}
 	    		
@@ -129,7 +131,8 @@ class communicator implements Runnable {
 	    	
 	    	case "setFree": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
-	    			System.out.println("setFree not exist");
+	    			System.out.println("setFree failure: Table "+ Integer.parseInt(parsed[2]) + " does not exist.");
+	    			send("table:"+Integer.parseInt(parsed[2])+":doesntExist");
 	    			break;
 	    		}
 	    		System.out.println("|Setting the table "+ Integer.parseInt(parsed[2])+ " free");
@@ -141,43 +144,66 @@ class communicator implements Runnable {
 	    	case "queue": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
 	    			System.out.println("queue not exist");
+	    			send("table:"+Integer.parseInt(parsed[2])+":doesntExist");
+	    			return "" ;
+	    		}
+	    		System.out.println("|Starting queue process");
+	    		//                   name,      phone,        partysize,                 table ID                   true/false openToNewTable?
+	    		group nt = new group(parsed[3], parsed[4], Integer.parseInt(parsed[5]), Integer.parseInt(parsed[2]),Boolean.parseBoolean(parsed[6]));
+	    		System.out.println("|adding new group: "+nt.toString());
+	    		if (!parent.getTableByID(Integer.parseInt(parsed[2])).queueGroup(nt)) {
+	    			System.out.println("Could not queue group");
+	    			send("queue:table:"+parsed[2]+":Failed");
 	    			break;
 	    		}
-	    		group nt = new group(parsed[3], parsed[4], Integer.parseInt(parsed[5]), Integer.parseInt(parsed[2]),Boolean.parseBoolean(parsed[7]));
-	    		System.out.println("|adding new group: "+nt.toString());
-	    		parent.getTableByID(Integer.parseInt(parsed[2])).queueGroup(nt);
+	    		// This will return to the client if the new group was sat immediately or if they were queued to the table.
+	    		if (parent.getTableByID(Integer.parseInt(parsed[2])).getCurrentlySat() != null) {
+	    			if (parent.getTableByID(Integer.parseInt(parsed[2])).getCurrentlySat().equals(nt))
+	    				send("queue:table:"+parsed[2]+":satImmediately");  // queue:table:1:satImmediately
+	    			else
+	    				send("queue:table:"+parsed[2]+":queued");          // queue:table:1:queued
+	    		} else
+    				send("queue:table:"+parsed[2]+":queued");          // queue:table:1:queued
+	    			
 	    		break;
-	    		// determine if the new group was added to the queue or immediately sat
 	    	}
 	    	
 	    	case "removeTable": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
 	    			System.out.println("removeTable not exist");
+	    			send("table:"+Integer.parseInt(parsed[2])+":doesntExist");
 	    			break;
 	    		}
 	    		System.out.println("|Setting the table "+ Integer.parseInt(parsed[2])+ " remove");
 	    		parent.tables.remove(parent.getTableByID(Integer.parseInt(parsed[2])));
+	    		send("removeTable:true"); // removeTable:true
+	    		break;
 	    	}
 	    	
 	    	case "addTable": {
 	    		int maxInd = parent.getHighestTableIndex();
 	    		table t1 = new table(parent, maxInd+1);
 	    		t1.setSeats(Integer.parseInt(parsed[2]));
+	    		t1.setShape(parsed[3]);
 	    		System.out.println("|Adding the table "+ t1.toString());
 	    		parent.addTable(t1);
+	    		send("addTable:"+Integer.toString(maxInd+1)+":true"); // addTable:<newTableID>:true // maybe fix it for real feedback later
 	    		break;
 	    	}
 	    	
 	    	case "getAllTables": {
 	    		String allTables = "";
 	    		for (table ttable: parent.tables ) {
-	    			allTables += ttable.toString() + "\n";// NOTE THE \n ADDS A NATURAL DELIMETER!!!!!!
+	    			allTables += ttable.toString();
 	    		}
+	    		System.out.println("|AllTables>"+allTables);
+	    		send("getAllTables:"+allTables);
 	    		break;
 	    	}
 	    	
 	    	default: {
 	    		System.out.println("|No parsing matches");
+	    		send("no matching arguments");
 	    		break;
 	    	}
 	    	
@@ -191,11 +217,10 @@ class communicator implements Runnable {
     
 	
 	public void run()  {
-
-        try {
-            // continue communication until the DIE directive is provided.
-        	// For now this involves a horrific double trouble while true loop.......!>?!>!.
-            while (true) {
+        // continue communication until the DIE directive is provided.
+    	// For now this involves a horrific double trouble while true loop.......!>?!>!.
+        while (true) {
+        	try {
             	// For now the communication should be lightning fast, so we can create the socket, communicate, close the socket, loop back and recreate it.
             	// This is seriously not the right approach for a production system....................
                 server = new ServerSocket(_port);
@@ -216,13 +241,20 @@ class communicator implements Runnable {
 	                    }
 	                    
 	                    // write an actual parsing function for this, so we can poll the restaurant object for what's going on..
-	                    parseIncoming(line);
+	                    // Just in case theres some sort of error, asplode into the try statement rather than bringing down the whole resty db.
+	                    //try {
+		                    parseIncoming(line);
+	                    //} catch (Exception ex) {
+	                    	//send("ERROR: failed to poll restaurant: "+ex.toString());
+	                    //}
+	                    
 	                    
 	                    System.out.println(line);
 	                }
 	                catch(IOException i) {
 	                	// catch all garbage socket connection issues..
 	                    System.out.println(i);
+	                    die = true;
 	                    break;
 	                }
 	            }
@@ -232,14 +264,15 @@ class communicator implements Runnable {
 	            socket.close();
 	            in.close();
 	            if (die) break;
-            }
   
-
+            }
+            catch(IOException i) {
+            	// just in case, catch any other exceptions....
+                System.out.println(i);
+            }
+	            
         }
-        catch(IOException i) {
-        	// just in case, catch any other exceptions....
-            System.out.println(i);
-        }
+  
 		
 	}
 	

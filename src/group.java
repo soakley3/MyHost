@@ -81,6 +81,10 @@ class group {
 		timeWaiting = -1;
 	}
 
+	public boolean equals(group other) {
+		//        compare name String            compare phone number String                   compare party size int
+		return (this.name.equals(other.name) && this.phoneNumber.equals(other.phoneNumber) && (this.getPartySize() == other.getPartySize()));
+	}
 	
 	public String toString() { 
 		if (name == null)
