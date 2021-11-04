@@ -118,6 +118,24 @@ Server Communication Guidelines:
 	I: Definition above. We sat jonny depp, and no one was sat so it was immediate. 
 	```
 
+Run time instructions:
+======================
+
+1. Download the repo.
+
+2. cd into the src directory and run - 
+
+	```
+	javac ITSC4155.java
+	```
+
+3. Then to run the server:
+
+	```
+	java ITSC4155
+	```
+
+4. You'll need to do the same thing if you want to try out the tester client. It's located in src/Client/
 
 
 
