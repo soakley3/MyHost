@@ -1,13 +1,27 @@
 # MyHost
 
+
+Recent work:
+============
+
+1. Table handling complete. If someone adds themself as open to a new table, they'll eventually get scheduled to an open table
+	if they've added to an occupied table. 
+
+2. Socket communication started.
+
+3. Test client created. This clearly over communicates to stress the server, but the webclient wont do that much communication.
+
+
 Next Steps:
 ===========
 
-1. Need to add Table handling / timers.
-2. Should there be a table timer, thus starting the cleaning process and effectively kicking out the current customer, and notifying the next customers? 
-3. Need to add Java server communication ability between this backend code and the website front end. 
+1. Need to create login details for the backend. 
 
-4. Really important: We need to start the web front end as soon as possible. 
+2. Need to add 1 hour timers to tables to kick out a patron and invite new ones. 
+
+3. Add more socket commands for the table front end.
+
+4. Add more socket commands for the admin view. We NEED this made in the webclient first! 
 
 5. There's always more....
 
@@ -118,6 +132,7 @@ Server Communication Guidelines:
 	I: Definition above. We sat jonny depp, and no one was sat so it was immediate. 
 	```
 
+
 Run time instructions:
 ======================
 
@@ -135,7 +150,11 @@ Run time instructions:
 	java ITSC4155
 	```
 
-4. You'll need to do the same thing if you want to try out the tester client. It's located in src/Client/
+4. You'll need to do the same thing if you want to try out the tester client. It's located in src/Client/. Run as the following
+
+	```
+	java Client testcase1.txt
+	```
 
 
 

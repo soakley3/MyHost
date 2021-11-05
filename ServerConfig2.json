@@ -1,0 +1,75 @@
+{
+	"restaurant": {
+		"restaurant_name": "BigBuns",
+		"restaurant_phone": "9199868283",
+		"hours_open": "1100",
+		"hours_end": "2200",
+	}
+	"tables": [
+		{
+			"table_id": "1",
+			"table_shape": "Square",
+			"seats": "2"
+		},
+		{
+			"table_id": "2",
+			"table_shape": "Circle",
+			"seats": "4"
+		},
+		{
+			"table_id": "3",
+			"table_shape": "Square",
+			"seats": "4"
+		},
+		{
+			"table_id": "4",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "5",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "6",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "7",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "8",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "9",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "10",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "11",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "12",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+		{
+			"table_id": "13",
+			"table_shape": "hexagon",
+			"seats": "20"
+		},
+	]
+}

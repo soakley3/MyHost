@@ -103,7 +103,7 @@ class restaurant {
 	}
 	
 	public void parseConfig() {
-		try (BufferedReader br = new BufferedReader(new FileReader("ServerConfig.json"))) {
+		try (BufferedReader br = new BufferedReader(new FileReader("ServerConfig2.json"))) {
 			int mostRecentTableID = -1;
 		    String line;
 		    int configLevel = 0;
@@ -180,7 +180,7 @@ class restaurant {
 	
 	public void saveConfig() { 
 		try {
-			FileWriter myWriter = new FileWriter("ServerConfig2.json");
+			FileWriter myWriter = new FileWriter("ServerConfig3.json");
 			
 			String toSave = "{\n"
 				+ "	\"restaurant\": {\n"                         // one tab

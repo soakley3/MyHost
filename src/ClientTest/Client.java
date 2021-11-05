@@ -14,7 +14,7 @@ public class Client {
     boolean die = false;
   
     // constructor to put ip address and port
-    public Client(String address, int port)
+    public Client(String address, int port, String[] toSend) 
     {
         // establish a connection
         try
@@ -37,30 +37,7 @@ public class Client {
         }
         
         
-        //String a = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        //a += "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-        
-        //send(a);
-        
-        String[] toSend = {
-            	"isFree:table:1",//                        -> [isFree, table, 1]                           -> get the info from restaurant - is table of ID 1 free? 
-            	"setFree:table:1",//                       -> [setFree, table, 1]                          -> manually/forcefully set the table of ID 1 free
-            	"addTable:table:20:hexagon",//             -> [addTable, table, 20]                        -> manually add a table with 20 seats
-            	//queue,table,tablenum,name,phone,partysize,opentonewtable
-            	"queue:table:1:Jonny Depp:919919919:3:true",// -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
-            	"removeTable:table:1",//                   -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
-            	"addTable:table:20:hexagon",//             -> [addTable, table, 20, hexagon]
-            	"getAllTables",
-            	"queue:table:1:Jonny Depp:919919919:2:true",
-            	"queue:table:5:Jonny Depp:919919919:2:true"
-        };
-        
-        
-        
-        
-        //out.flush();
-        
-        
+
   
         // string to read message from input
         String line = "";
@@ -111,7 +88,22 @@ public class Client {
   
     public static void main(String args[])
     {
-        Client client = new Client("127.0.0.1", 5000);
+    	
+		BufferedReader br;
+		String[] lns = {};
+		
+		try {
+			br = new BufferedReader(new FileReader(args[0]));
+			lns = br.lines().toArray(String[]::new);
+		} catch (Exception e) {
+			System.out.println("error file " + e.toString());
+		}
+
+    	System.out.println(args[0]);
+    	for (String t: lns) { 
+    		System.out.println(t);
+    	}
+        Client client = new Client("127.0.0.1", 5000, lns);
         // things to send
 
         

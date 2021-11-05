@@ -20,17 +20,47 @@ public class ITSC4155 {
 		resty.tables = new LinkedList<table>();
 		resty.parseConfig();
 	
-		// Yee haw start the communication thread, including the resty class 
+		// Yee haw start the communication thread, including the resty class
+		
+		communicator server = null;
         try {		
-			communicator server = new communicator(resty, 5000);
+			server = new communicator(resty, 5000);
 			server.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+        if (server == null) {
+        	System.out.println("Failed to start server");
+        	return;
+        }
+        
+        while(!server.die ) {
+        	// loop doing table maintenance, like checking for free tables when others are queued.
+        	for (table tz: resty.getTables()) {
+        		tz.checkAvailability();
+        	}
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+        	
+        }
+        
 		System.out.println("past the server instantiation.");
 		
 		
+		// NOTE THE MODIFIED TABLE CONFIG **MUST** BE SAVED WHEN THE COMMUNICATOR THREAD DIES!!!!!!!
+		// NOT HERE, because this executes and completes before the end of the communicator thread.
+	}
+	
+	
+	
+	
+	
+	public void testExtraTablesAndPeople() { 
 		/*x
 		for(table t: resty.getTables()) {
 			t.setSeats(20);
@@ -161,11 +191,8 @@ x		*/
 		// Next, add server communication.
 		
 		
-		//resty.saveConfig();
 y		*/
-			
 	}
-	
 	
 	public void actualMain() { 
 		// nadas for now.

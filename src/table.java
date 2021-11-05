@@ -92,6 +92,14 @@ class table {
 		return false;
 	}
 	
+	public void checkAvailability() {
+		if (currentlySat == null && queue.size() == 0) {
+			//totallyFree = true;
+			// Reach out to the queued groups waiting for other tables. 
+			queueExternalCandidates();
+		}
+	}
+	
 	public boolean seatNext() {
 		// check to see if the wait queue is empty. If so, then offer the table to people waiting for a DIFFERENT table. 
 		if (queue.size() == 0) {

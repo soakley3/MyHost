@@ -1,0 +1,18 @@
+getAllTables
+isFree:table:1                       
+addTable:table:20:hexagon            
+queue:table:1:Jonny Depp:919919919:3:true
+addTable:table:20:hexagon            
+getAllTables
+queue:table:2:Jony Ives:919919919:2:true
+queue:table:3:Debbie:919919919:2:true
+queue:table:4:Bob:919919919:2:true
+queue:table:5:Darrels:919919919:2:true
+queue:table:1:darren:919919919:2:true
+queue:table:2:Steve:919919919:2:true
+queue:table:4:Harry:919919919:2:true
+queue:table:5:Trusha:919919919:2:true
+queue:table:1:Vaibhav:919919919:2:true
+queue:table:2:Krsitians:919919919:2:true
+queue:table:2:Tays:919919919:2:true
+getAllTables
