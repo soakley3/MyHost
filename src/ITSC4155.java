@@ -35,6 +35,9 @@ public class ITSC4155 {
         	return;
         }
         
+        // persistent checking for available tables.
+        // We'll need to make these functions less verbose, because they're absolutely spamming the console 
+        // to the point where its not readable..............................
         while(!server.die ) {
         	// loop doing table maintenance, like checking for free tables when others are queued.
         	for (table tz: resty.getTables()) {

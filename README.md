@@ -132,6 +132,14 @@ Server Communication Guidelines:
 	I: Definition above. We sat jonny depp, and no one was sat so it was immediate. 
 	```
 
+        ```
+        C:"getQueueSize:table:1"
+        S:"queueSize:1:0"
+        I: Definition above. The number of groups queued for table 1 is zero. 
+        ```
+
+
+
 
 Run time instructions:
 ======================

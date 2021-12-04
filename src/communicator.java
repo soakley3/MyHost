@@ -1,9 +1,23 @@
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -76,10 +90,18 @@ I need to make the coms class, and then make it thread compatible.
 
 class communicator implements Runnable {
 	
+	
+	private ServerSocket serverz = null;
+	private Socket clientz = null; 
+	private InputStream inputz = null;
+	private OutputStream outputz = null;
+	private BufferedReader readerz = null;
+	private PrintWriter writerz = null;
+	
     private Socket          socket   = null;
     private ServerSocket    server   = null;
-    private DataInputStream in       = null;
-    private DataOutputStream out     = null;
+    private BufferedReader in       = null;
+    private BufferedWriter out     = null;
 	private restaurant parent;
 	private int _port;
     boolean die = false;
@@ -95,7 +117,8 @@ class communicator implements Runnable {
 	
     public void send(String t) {
     	try {
-    		out.writeUTF(t+"\r\n");
+    		out.write(t+"\r\n");
+    		//out.writeUTF(t+"\r\n");
     		out.flush();
     		System.out.println("*"+t);
     	} catch (Exception e) {
@@ -112,7 +135,7 @@ class communicator implements Runnable {
     	"removeTable:table:1                    -> [removeTable, table, 1]                      -> manually/forcefully delete table of ID 1
     	"addTable:table:20                      -> [addTable, table, 20]                        -> manually add a table with 20 seats
     	"queue:table:1:Jonny Depp:phoneNum:PartSize:table:alternateAcceptabe" -> [queue, table, 1, Jonny Depp, phoneNum, etc] -> Add jonny depp to the queue for table 1
-    	
+    	"getQueueSize:table:1    ->  send "queueSize:1:1"
     	*/
     	t = t.replaceAll(" ", "");
     	t = t.replaceAll("\r", "");
@@ -130,6 +153,15 @@ class communicator implements Runnable {
     	
     	switch (parsed[0]) {
     		//figure it out... 
+    	
+	    	case "login": {
+	    		
+	    		System.out.print("LOGIN ATTEMPTED BY USER " + parsed[1]);
+	    		
+	    		
+	    		
+	    		break;
+	    	}
     	
 	    	case "isFree": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
@@ -216,6 +248,20 @@ class communicator implements Runnable {
 	    		break;
 	    	}
 	    	
+	    	case "getQueueSize": {
+	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
+	    			System.out.println("getQueueSize failure: Table "+ Integer.parseInt(parsed[2]) + " does not exist.");
+	    			send("table:"+Integer.parseInt(parsed[2])+":doesntExist");
+	    			break;
+	    		}
+	    		
+	    		int qSize = parent.getTableByID(Integer.parseInt(parsed[2])).getQueued().size();
+	    		System.out.println("|queueSize "+ Integer.parseInt(parsed[2])+ ":" + qSize);
+	    		send("queueSize:"+Integer.parseInt(parsed[2])+":"+Integer.toString(qSize)); // send "queueSize:1:1"
+	    		break;
+	    		
+	    	}
+	    	
 	    	default: {
 	    		System.out.println("|No parsing matches");
 	    		send("no matching arguments");
@@ -225,15 +271,16 @@ class communicator implements Runnable {
     	
     	}
     	
-    	return builtLine;
-    	
-    	
+    	return builtLine;    	
     }
     
+
 	
 	public void run()  {
         // continue communication until the DIE directive is provided.
     	// For now this involves a horrific double trouble while true loop.......!>?!>!.
+		
+		
         try {
 			server = new ServerSocket(_port);
     		System.out.println("&A");
@@ -248,15 +295,20 @@ class communicator implements Runnable {
             	// For now the communication should be lightning fast, so we can create the socket, above, communicate, close the socket at the end
         		// and then loop back without destroying the socket. This seems to work with my test client. If two client connect at the same time
         		// the second client just waits momentarily to connect until the first client ends the connection. 
-        		 
+                System.out.println("A client connected.");
         		System.out.println("&B");
                 socket = server.accept(); // wait for a connection.
+
                 System.out.println("Socket Client Connection");
         		System.out.println("&C");
-                in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                // in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+        		in = new BufferedReader(
+    					new InputStreamReader(socket.getInputStream()));
                 // sends output to the socket
         		System.out.println("&D");
-                out = new DataOutputStream(socket.getOutputStream());
+                //out = new DataOutputStream(socket.getOutputStream());
+    			out = new BufferedWriter(
+    					new OutputStreamWriter(socket.getOutputStream()));
 				try {
 					TimeUnit.SECONDS.sleep(1);
 				} catch (InterruptedException e) {
@@ -264,33 +316,44 @@ class communicator implements Runnable {
 					e.printStackTrace();
 				}
                 String line = "";
+                
             	// Do the actual communication.
 	            while (true) {
 	                try {
-	                    line = in.readUTF();	                    
-	                    if (line.contains("DIE")) {
-	                    	die = true;
-	                    	break;
-	                    }
-	                    
-	                    // write an actual parsing function for this, so we can poll the restaurant object for what's going on..
-	                    // Just in case theres some sort of error, asplode into the try statement rather than bringing down the whole resty db.
-	                    //try {
-		                    parseIncoming(line);
-	                    //} catch (Exception ex) {
-	                    	//send("ERROR: failed to poll restaurant: "+ex.toString());
-	                    //}
-	                    
-	                    
-	                    System.out.println(line);
+	                	line = in.readLine();
+	                    //line = in.readUTF();	
+	                	
+	                	// CATCH THE WEB REQUEST!!!!!!
+	                	
+	                	if (line != null) {
+		                    // write an actual parsing function for this, so we can poll the restaurant object for what's going on..
+		                    // Just in case theres some sort of error, asplode into the try statement rather than bringing down the whole resty db.
+		                    try {
+			                    parseIncoming(line);
+		                    } catch (Exception ex) {
+		                    	send("ERROR: failed to poll restaurant: "+ex.toString());
+		                    }
+	                	}
+	                	
+	                	if (line != null) {
+		                    if (line.contains("DIE")) {
+		                    	die = true;
+		                    	break;
+		                    }
+	                	} 
+	                	
+
+	                    if (line == null) break;
+	                    System.out.println("'"+line+"'");
 	                }
 	                catch(IOException i) {
+	                	i.printStackTrace();
 	                	// catch all garbage socket connection issues..
-	                    System.out.println(i);
+	                    System.out.println("dead i: " + i);
 	                    //die = true;
 	                    break;
 	                }
-	            }
+	            } 
 
 	            System.out.println("Closing this socket");
                 // close connection
@@ -298,6 +361,7 @@ class communicator implements Runnable {
 		        send("DIE");
 	            socket.close();
 	            in.close();
+	            out.close();
 	            if (die) break;
   
             }

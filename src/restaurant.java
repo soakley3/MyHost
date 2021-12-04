@@ -63,9 +63,9 @@ class restaurant {
 	// oeprations in the main loop
 	public LinkedList<group> sortGroupsByLongestWaiting() {
 		LinkedList<group> sortable = new LinkedList<>();
-		System.out.println("--> " + tables);
+		//System.out.println("--> " + tables);
 		for (table singleTable : tables) {
-			System.out.println("---> " + singleTable.toString());
+			//System.out.println("---> " + singleTable.toString());
 			for (group waiting : singleTable.getQueued()) {
 				if (waiting.openToDifferentTable()) {          // only add the group to the list if they're open to a different table
 					sortable.add(waiting);

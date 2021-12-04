@@ -68,7 +68,7 @@ class table {
 		// Concerns: we need to avoid a race condition.
 		// If we ping a customer (waiting for a different table) offering them to take this table, and someone else books 
 		// through the app/website before this person accepts, the first contender might be overwritten by the second contender....
-		System.out.println("* " + parent.getRestaurantName());
+		//System.out.println("* " + parent.getRestaurantName());
 		LinkedList<group> allQueuedInOrder = parent.sortGroupsByLongestWaiting();
 		if (allQueuedInOrder.size() == 0) {
 			totallyFree = true;
@@ -173,7 +173,7 @@ class table {
 	}
 	
 	public String toString() {
-		String toRet = "Table: " + Integer.toString(id) + "; Shape: " + shape +"; Seats: " + Integer.toString(seats) + ";\n";
+		String toRet = "Table: " + Integer.toString(id) + "; Shape: " + shape +"; Seats: " + Integer.toString(seats) + "; ";
 		String queueue = "";
 		for (group g: queue) {
 			queueue += g.toString() + " - ";
