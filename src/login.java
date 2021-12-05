@@ -8,6 +8,7 @@ import java.util.*;
 public class login {
     public void main(String[] args) {
         // TODO code application logic here
+        // holds the accounts incase we need to pull the username and password from them (to change them)
         ArrayList<account> accountList = new ArrayList<>();
         String userInput = "Billy:Bob";
         String[] inputParts = userInput.split(":");
@@ -30,13 +31,15 @@ public class login {
         //}
         // else{
         boolean correctUser = isAccount(username, password);
+        // testing with a invalid login
         boolean incorrectUser = isAccount("Johnny", password);
+        // just making sure NBA youngboy works with the right info
         System.out.println(accountList.get(0).getUsername() + " " + accountList.get(0).getPassword());
-        System.out.println(correctUser);
-        System.out.println(incorrectUser);
+        System.out.println(correctUser); // should be true
+        System.out.println(incorrectUser); // should be false
         //}
     }
-
+    // checks txt file for the username
     public static boolean isAccount(String givenUserName, String givenPassword) {
         boolean correctUser = false;
 
