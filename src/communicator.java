@@ -176,6 +176,19 @@ class communicator implements Runnable {
 	    		break;
 	    	}
 	    	
+	    	
+	    	case "tableAvailability": {
+	    		String toRettables = "";
+	    		for (table tt: parent.getTables() ) {
+	    			toRettables += "table:"+Integer.toString(tt.getID())+":"+Boolean.toString(tt.isReady())+":";
+	    		}
+	    		toRettables = toRettables.substring(0, toRettables.length() - 1);
+	    		System.out.println("|tableAvailability: " + toRettables);
+	    		send(toRettables); // send "table:1:true"
+	    		break;
+	    	}
+	    	
+	    	
 	    	case "setFree": {
 	    		if (!parent.tableExists(Integer.parseInt(parsed[2]))) {
 	    			System.out.println("setFree failure: Table "+ Integer.parseInt(parsed[2]) + " does not exist.");
