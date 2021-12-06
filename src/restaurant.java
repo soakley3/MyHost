@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 class restaurant {
 	
-	
+	public AccountStorage accStores; 
 	
 	private int id;
 	public String name;
@@ -100,6 +100,29 @@ class restaurant {
 		
 		//tables = new LinkedList<table>();
 		//parseConfig();
+		accStores = new AccountStorage();
+		for (account t: accStores.accountList) {
+			System.out.println(">> " + t.getUsername() + " "+t.getPassword());
+		}
+		System.out.println(">>> "+accStores.isAccount("smiley.puma@gmail.com", "bigPass1"));   //true
+		System.out.println(">>> "+accStores.isAccount("will.doug@gmail.com", "oldDumbpass2")); //true
+		System.out.println(">>> "+accStores.isAccount("will.doug@gmail.com", "oldDumbpass3")); //false
+		
+		
+		account t2 = new account("will.doug@gmail.com", "oldDumbpass2");
+		account t3 = new account("will.doug@gmail.com", "oldDumbpass3");
+		account t4 = new account("will.doug@gmail.com", "oldDumbpass2");
+		System.out.println(">>>> "+t2.equals(t3));
+		System.out.println(">>>> "+t2.equals(t4));
+		System.out.println(">>>>> "+accStores.accountList.contains(t2));
+		System.out.println(">>>>> "+accStores.accountList.contains(t3));
+		
+		accStores.changePassword("will.doug@gmail.com", "oldDumbpass23");
+
+		for (account t: accStores.accountList) {
+			System.out.println(">> " + t.getUsername() + " "+t.getPassword());
+		}
+
 	}
 	
 	public void parseConfig() {

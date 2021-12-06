@@ -21,4 +21,9 @@ public class account {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    // compare this account to a provided one
+    public boolean equals(account t) {
+    	return (this.password.equals(t.getPassword()) && this.username.toLowerCase().equals(t.getUsername().toLowerCase()));
+    }
 }
