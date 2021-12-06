@@ -58,6 +58,7 @@ public class AccountStorage {
     
     public void addNewAccount(String givenUserName, String givenPassword) {
     	accountList.add(new account(givenUserName.toLowerCase(), givenPassword));
+    	this.saveAccounts();
     }
     
     public void changePassword(String givenUserName, String newPassword) {
