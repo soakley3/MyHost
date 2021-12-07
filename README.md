@@ -138,6 +138,19 @@ Server Communication Guidelines:
         I: Definition above. The number of groups queued for table 1 is zero. 
         ```
 
+        ```
+        C:"testLogin:username:password"
+        S:"testLogin:passed"
+        S:"testLogin:failed:wrong account or password"
+        I: Definion: sent via the login page to the system. Expect the server responses above, and parse to continue or not to the home page. 
+        ```
+
+        ```
+        C:"changePassword:username:newPassword"
+        S:"changePassword:passed"
+        S:"hangePassword:failed:failed to change password"
+        I: Definion: UNTESTED send this from the account change page to the server to change the logged in user's password. Expect the server responses above, and parse to continue or not to the home page.
+        ```
 
 
 

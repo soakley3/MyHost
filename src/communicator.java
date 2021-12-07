@@ -272,7 +272,34 @@ class communicator implements Runnable {
 	    		System.out.println("|queueSize "+ Integer.parseInt(parsed[2])+ ":" + qSize);
 	    		send("queueSize:"+Integer.parseInt(parsed[2])+":"+Integer.toString(qSize)); // send "queueSize:1:1"
 	    		break;
+	    	}
+	    	
+	    	case "testLogin": {
+	    		if (parsed.length != 3) {
+	    			send("testLogin:failed:not enough data");
+	    			break;
+	    		}
+	    		if (parent.accStores.isAccount(parsed[1], parsed[2])) {
+	    			send("testLogin:passed");
+	    		} else {
+	    			send("testLogin:failed:wrong account or password");
+	    		}
+	    		break;
+	    	}
+	    	
+	    	case "changePassword": {
+	    		if (parsed.length != 3) {
+	    			send("changePassword:failed:not enough data");
+	    			break;
+	    		}
+	    		parent.accStores.changePassword(parsed[1], parsed[2]);
 	    		
+	    		if (parent.accStores.isAccount(parsed[1], parsed[2])) {
+	    			send("changePassword:passed");
+	    		} else {
+	    			send("changePassword:failed:failed to change password");
+	    		}
+	    		break;
 	    	}
 	    	
 	    	default: {
