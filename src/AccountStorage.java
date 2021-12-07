@@ -65,6 +65,7 @@ public class AccountStorage {
     	for (account t: accountList) {
     		if (t.getUsername().toLowerCase().equals(givenUserName.toLowerCase())) {
     			t.setPassword(newPassword);
+    			break;
     		}
     	}
     	this.saveAccounts(); // we want to immediately save any password changes to disk.
