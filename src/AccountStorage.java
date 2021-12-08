@@ -71,6 +71,33 @@ public class AccountStorage {
     	this.saveAccounts(); // we want to immediately save any password changes to disk.
     }
     
+    public void changeUser(String oldUser, String newUser) {
+    	boolean changed = false;
+    	for (account t: accountList) {
+    		if (t.getUsername().toLowerCase().equals(oldUser.toLowerCase())) {
+    			t.setUsername(newUser.toLowerCase());
+    			System.out.print("--> resetting username to " + newUser);
+    			changed = true;
+    			break;
+    		}
+    	}
+    	if (changed)
+    		this.saveAccounts(); // we want to immediately save any password changes to disk.
+    	else
+    		System.out.println("didnt change user name, as user didnt exist: " +oldUser);
+    }
+    
+    public boolean accountExists(String usah) { 
+    	for (account t: accountList) {
+    		if (t.getUsername().toLowerCase().equals(usah.toLowerCase())) {
+    			System.out.print("--> username does exist: " + usah);
+    			return true;
+    		}
+    	}
+    	System.out.print("--> username doesnt exist: " + usah);
+    	return false;
+    }
+    
     public AccountStorage() {
     	this.loadAccounts();
     }

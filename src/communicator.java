@@ -302,6 +302,22 @@ class communicator implements Runnable {
 	    		break;
 	    	}
 	    	
+	    	//changeUser:oldname:newName
+	       	case "changeUser": {
+	    		if (parsed.length != 3) {
+	    			send("changeUser:failed:not enough data");
+	    			break;
+	    		}
+	    		parent.accStores.changeUser(parsed[1], parsed[2]);
+	    		
+	    		if (parent.accStores.accountExists(parsed[2])) {
+	    			send("changeUser:passed");
+	    		} else {
+	    			send("changeUser:failed:failed to change username");
+	    		}
+	    		break;
+	    	}
+	    	
 	    	default: {
 	    		System.out.println("|No parsing matches");
 	    		send("no matching arguments");
