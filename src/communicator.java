@@ -318,6 +318,67 @@ class communicator implements Runnable {
 	    		break;
 	    	}
 	       	
+	       	
+	       	case "cancelReservation": {
+	    		if (parsed.length != 4) {
+	    			send("cancelReservation: failed due to check due to incorrect request");
+	    			break;
+	    		}
+	    		try {
+	    			
+	    			boolean found = false;
+	
+		    		// this is not beautiful... sorry. but this checks the presently sat groups at the tables
+		    		for (table curTable: parent.tables) {
+		    			if (curTable.getCurrentlySat() != null) {
+			    			if (curTable.getCurrentlySat().getName().toLowerCase().equals(parsed[1].toLowerCase())) {
+				    			if (curTable.getCurrentlySat().getNumber().toLowerCase().equals(parsed[2].toLowerCase())) {
+					    			if (curTable.getCurrentlySat().getPartySize() == Integer.parseInt(parsed[3])) {
+					    				//
+					    				System.out.println("hit here1");
+
+					    				send("cancelReservation:true"); // skip this one!!!
+					    				curTable.seatNext();
+					    				found = true;
+					    				break; // we can exit here as we know we have found the table the group is sat at.
+					    			}
+				    			}
+			    			}
+		    			}
+		    		}
+		    		if (found) break; // exit early..................
+		    		// if not found actually sat at the table, then we check the queues of each table.
+		    		for (table curTable: parent.tables) {
+		    			int pos = 1;
+		    			for (group gg: curTable.getQueued()) {
+			    			if (gg.getName().toLowerCase().equals(parsed[1].toLowerCase())) {
+				    			if (gg.getNumber().toLowerCase().equals(parsed[2])) {
+					    			if (gg.getPartySize() == Integer.parseInt(parsed[3])) {
+					    				curTable.getQueued().remove(gg);
+					    				System.out.println("hit here2");
+					    				send("cancelReservation:true");
+					    				found = true;
+					    				System.out.println(curTable.getQueued());
+					    				break; // we can exit here as we know we have found the table the group is sat at.
+					    			}
+				    			}
+			    			}
+			    			pos++;
+		    			}
+		    			if (found) break; // exit the outer loop
+		    		}
+		    		if (found) break; // exit the case statement since all was communicated.
+		    		send("isReadyYet:false:-1:-1"); // -1 means we couldnt find you in any of the queues.	       		
+		       		break;
+		       		
+	    		} catch (Exception e) {
+	    			System.out.print("failure in isReadyYet " + e );
+	    		}
+	       		
+	       		break;
+	       	}
+	       	
+	       	
 	       	// INPUT TO SERVER 
 	       	///    "isReadyYet:Name:phoneNumber:groupSize"
 	       	//
@@ -351,7 +412,7 @@ class communicator implements Runnable {
 			    			}
 		    			}
 		    		}
-		    		
+		    		if (found) break; // exit early please...
 		    		// if not found actually sat at the table, then we check the queues of each table.
 		    		for (table curTable: parent.tables) {
 		    			int pos = 1;

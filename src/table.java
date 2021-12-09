@@ -105,10 +105,13 @@ class table {
 		if (queue.size() == 0) {
 			totallyFree = true;
 			// Reach out to the queued groups waiting for other tables. 
+			currentlySat = null;
+
 			queueExternalCandidates();
 			return false;
 		}
-		setOccupied();
+		//setOccupied();
+		currentlySat = null;
 		currentlySat = queue.pop(); // assign the next group to sit at the table. 
 		return (currentlySat != null);
 	}
