@@ -372,7 +372,7 @@ class communicator implements Runnable {
 		       		break;
 		       		
 	    		} catch (Exception e) {
-	    			System.out.print("failure in isReadyYet " + e );
+	    			System.out.print("failure in cancelReservation " + e );
 	    		}
 	       		
 	       		break;
