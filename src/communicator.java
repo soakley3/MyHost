@@ -368,7 +368,7 @@ class communicator implements Runnable {
 		    			if (found) break; // exit the outer loop
 		    		}
 		    		if (found) break; // exit the case statement since all was communicated.
-		    		send("isReadyYet:false:-1:-1"); // -1 means we couldnt find you in any of the queues.	       		
+		    		send("cancelReservation:false:-1:-1"); // -1 means we couldnt find you in any of the queues.	       		
 		       		break;
 		       		
 	    		} catch (Exception e) {
@@ -436,8 +436,21 @@ class communicator implements Runnable {
 		       		
 	    		} catch (Exception e) {
 	    			System.out.print("failure in isReadyYet " + e );
+	    			break;
 	    		}
 		    }
+	       	
+	       	case "pop": {
+	    		if (parsed.length != 2) {
+	    			send("pop: failed due to check due to incorrect request");
+	    			break;
+	    		}
+	    		int tableNum = Integer.parseInt(parsed[1]);
+	    		System.out.println("popper");
+	    		send("popped");
+	    		parent.getTableByID(tableNum).seatNext();
+	    		break;
+	       	}
 		       	
 	    	
 	    	default: {

@@ -22,6 +22,15 @@ public class ITSC4155 {
 	
 		// Yee haw start the communication thread, including the resty class
 		
+		for (int zi  = 3; 24 > zi; zi++) {
+			String name = "";
+			Random r = new Random();
+			for (int x = 0; 10 > x; x++) {
+				name += (char)(r.nextInt(26) + 'a');
+			}
+			resty.getTableByID(zi).queueGroup(new group(name, "9199868283", 1, zi, false));
+		}
+		
 		communicator server = null;
         try {		
 			server = new communicator(resty, 5000);
